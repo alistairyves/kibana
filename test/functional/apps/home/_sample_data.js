@@ -76,27 +76,41 @@ export default function ({ getService, getPageObjects }) {
         expect(panelCount).to.be(19);
       });
 
-
-      it.skip('pie charts rendered', async () => {
-        await dashboardExpect.pieSliceCount(4);
+      //todo aym I think these four are failing possibly because of the aftereach hook which redirects back to the home page
+      it('pie charts rendered', async () => {
+        // await dashboardExpect.pieSliceCount(4);
+        await PageObjects.home.launchSampleDataSet('flights');
+        await PageObjects.header.waitUntilLoadingHasFinished();
+        const today = new Date();
+        const todayYearMonthDay = today.toISOString().substring(0, 10);
+        const fromTime = `${todayYearMonthDay} 00:00:00.000`; //dont think this is needed
+        const toTime = `${todayYearMonthDay} 23:59:59.999`; //ditto
+        await PageObjects.header.setAbsoluteRange(fromTime, toTime);
+        const slicesCount = await PageObjects.dashboard.getPieSliceCount();
+        expect(slicesCount).to.be(4);
       });
 
+      //todo use same strategy as above for pie charts, but optimize to be repeated over these skipped test cases
       it.skip('area, bar and heatmap charts rendered', async () => {
         await dashboardExpect.seriesElementCount(15);
       });
 
+      //todo
       it.skip('saved searches render', async () => {
         await dashboardExpect.savedSearchRowCount(50);
       });
 
+      //todo
       it.skip('input controls render', async () => {
         await dashboardExpect.inputControlItemCount(3);
       });
 
+      //todo
       it.skip('tag cloud renders', async () => {
         await dashboardExpect.tagCloudWithValuesFound(['Sunny', 'Rain', 'Clear', 'Cloudy', 'Hail']);
       });
 
+      //todo
       it.skip('vega chart renders', async () => {
         const tsvb = await find.existsByCssSelector('.vega-view-container');
         expect(tsvb).to.be(true);
